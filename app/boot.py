@@ -102,34 +102,11 @@ def boot():
 
 def add_default_presets():
     try:
-        Preset.objects.update_or_create(name='Multispectral', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'radiometric-calibration', 'value': 'camera'}]})
-        Preset.objects.update_or_create(name='Volume Analysis', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'dsm', 'value': True},
-                                                              {'name': 'dem-resolution', 'value': '2'},
-                                                              {'name': 'pc-quality', 'value': 'high'}]})
-        Preset.objects.update_or_create(name='3D Model', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'mesh-octree-depth', 'value': "12"},
-                                                              {'name': 'use-3dmesh', 'value': True},
-                                                              {'name': 'pc-quality', 'value': 'high'},
-                                                              {'name': 'mesh-size', 'value': '300000'}]})
-        Preset.objects.update_or_create(name='Buildings', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'mesh-size', 'value': '300000'},
-                                                              {'name': 'feature-quality', 'value': 'high'},
-                                                              {'name': 'pc-quality', 'value': 'high'}]})
-        Preset.objects.update_or_create(name='Forest', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'min-num-features', 'value': '18000'},
-                                                              {'name': 'use-3dmesh', 'value': True},
-                                                              {'name': 'feature-quality', 'value': 'medium'}]})
-        Preset.objects.update_or_create(name='DSM + DTM', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'dsm', 'value': True},
-                                                              {'name': 'dtm', 'value': True}]})
+        # WebODM-lite: 2D only. "Default" is a fast orthophoto so that the
+        # task form (which selects the preset named "Default") stays 2D.
+        lite_presets = ['Default', 'Fast Orthophoto', 'Field']
+        Preset.objects.filter(system=True).exclude(name__in=lite_presets).delete()
+
         Preset.objects.update_or_create(name='Field', system=True,
                                         defaults={'options': [{'name': 'sfm-algorithm', 'value': 'planar'},
                                                               {'name': 'fast-orthophoto', 'value': True},
@@ -137,14 +114,10 @@ def add_default_presets():
         Preset.objects.update_or_create(name='Fast Orthophoto', system=True,
                                         defaults={'options': [{'name': 'auto-boundary', 'value': True},
                                                               {'name': 'fast-orthophoto', 'value': True}]})
-        Preset.objects.update_or_create(name='High Resolution', system=True,
-                                        defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'dsm', 'value': True},
-                                                              {'name': 'dem-resolution', 'value': "1.0"},
-                                                              {'name': 'orthophoto-resolution', 'value': "1.0"}]})
         Preset.objects.update_or_create(name='Default', system=True,
                                         defaults={'options': [{'name': 'auto-boundary', 'value': True},
-                                                              {'name': 'dsm', 'value': True}]})
+                                                              {'name': 'fast-orthophoto', 'value': True},
+                                                              {'name': 'skip-3dmodel', 'value': True}]})
 
     except MultipleObjectsReturned:
         # Mostly to handle a legacy code problem where

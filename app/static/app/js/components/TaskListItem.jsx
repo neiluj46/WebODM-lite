@@ -558,15 +558,6 @@ class TaskListItem extends React.Component {
           });
         }
 
-        if (task.available_assets.indexOf("georeferenced_model.laz") !== -1 || 
-            task.available_assets.indexOf("georeferenced_model.las") !== -1 ||
-            task.available_assets.indexOf("textured_model.glb") !== -1 ||
-            task.available_assets.indexOf("textured_model.zip") !== -1){
-          addActionButton(" " + _("3D Model"), "btn-primary", "fa fa-cube fa-fw", () => {
-            location.href = `/3d/project/${task.project}/task/${task.id}/`;
-          });
-        }
-
         if (task.available_assets.indexOf("report.pdf") !== -1){ 
           addActionButton(" " + _("Report"), "btn-primary", "far fa-file-pdf fa-fw", () => {
             this.displayPdf(`/api/projects/${task.project}/tasks/${task.id}/download/report.pdf?inline=1`, { 
@@ -863,7 +854,6 @@ class TaskListItem extends React.Component {
     if (task.status === statusCodes.COMPLETED){
       taskActions.push(
             <li key="media"><a href="javascript:void(0)" onClick={() => { this.setState({showMediaDialog: true}); }}><i className="fa fa-image"></i>{_("Media")}</a></li>,
-            <li key="splats"><a href="javascript:void(0)" onClick={() => { this.setState({showSplatsDialog: true}); }}><i className="fa fa-splat"></i>{_("Splats")}</a></li>,
       );
     }
 

@@ -13,7 +13,6 @@ import ErrorMessage from './ErrorMessage';
 import ImagePopup from './ImagePopup';
 import GCPPopup from './GCPPopup';
 import MediaView from './MediaView';
-import SwitchModeButton from './SwitchModeButton';
 import ShareButton from './ShareButton';
 import {addOverlayLayer, buildOverlay, recomputeOverlayBounds} from '../classes/OverlayLayer';
 import FormDialog from './FormDialog';
@@ -113,18 +112,6 @@ class Map extends React.Component {
   updatePopupFor(layer){
     const popup = layer.getPopup();
     $('#layerOpacity', popup.getContent()).val(layer.options.opacity);
-  }
-
-  tdPopupButtonUrl = (task) => {
-    if (this.props.public){
-      if (location.href.indexOf("/iframe/") !== -1){
-        return `/public/task/${task.id}/iframe/3d/`;
-      }else{
-        return `/public/task/${task.id}/3d/`;
-      }
-    }else{
-      return `/3d/project/${task.project}/task/${task.id}/`;
-    }
   }
 
   typeToHuman = (type, thermal = false) => {
@@ -454,14 +441,7 @@ class Map extends React.Component {
                                 <div>Bounds: [${layer.options.bounds.toBBoxString().split(",").join(", ")}]</div>
                                 <div class="popup-download-assets loading">
                                   <i class="fa loading fa-spin fa-sync fa-spin fa-fw"></i>
-                                </div>
-
-                                <button
-                                    onclick="location.href='${this.tdPopupButtonUrl(meta.task)}';"
-                                    type="button"
-                                    class="switchModeButton btn btn-sm btn-secondary">
-                                    <i class="fa fa-cube"></i> 3D
-                                </button>`;
+                                </div>`;
 
             layer.bindPopup(popup);
 
@@ -1771,11 +1751,7 @@ _('Example:'),
               queryParams={{t: this.props.mapType}}
             />
           : ""}
-          
-          <SwitchModeButton 
-            task={this.state.singleTask}
-            type="mapToModel" 
-            public={this.props.public} />
+
         </div>
       </div>
     );

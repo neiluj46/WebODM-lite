@@ -35,7 +35,8 @@ services:
       - WO_DEV
       - WO_DEV_WATCH_PLUGINS
       - WO_SECRET_KEY
-      - WEB_CONCURRENCY
+      # WebODM-lite: cap gunicorn / celery processes (default would be 2*nproc+1)
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
     restart: unless-stopped
     oom_score_adj: 0
   broker:
@@ -56,6 +57,7 @@ services:
       - WO_BROKER
       - WO_DEBUG
       - WO_SECRET_KEY
-      - WEB_CONCURRENCY
+      # WebODM-lite: cap gunicorn / celery processes (default would be 2*nproc+1)
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
     restart: unless-stopped
     oom_score_adj: 250

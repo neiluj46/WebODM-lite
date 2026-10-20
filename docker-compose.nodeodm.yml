@@ -12,6 +12,8 @@ services:
   node-odx-1:
     image: webodm/nodeodx
     container_name: node-odx-1
+    # WebODM-lite: process one task at a time (default is 2 in parallel, doubling peak RAM)
+    command: --parallel_queue_processing 1
     expose:
       - "3000"
     restart: unless-stopped

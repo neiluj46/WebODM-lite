@@ -1,5 +1,6 @@
 from django.conf.urls import url, include
 from django.views.i18n import JavaScriptCatalog
+from django.views.generic.base import RedirectView
 
 from .views import app as app_views, public as public_views, dev as dev_views, oidc as oidc_views
 from .plugins.views import app_view_handler, root_url_patterns
@@ -25,12 +26,13 @@ urlpatterns = [
     url(r'^dashboard/$', app_views.dashboard, name='dashboard'),
     url(r'^map/project/(?P<project_pk>[^/.]+)/task/(?P<task_pk>[^/.]+)/$', app_views.map, name='map'),
     url(r'^map/project/(?P<project_pk>[^/.]+)/$', app_views.map, name='map'),
-    url(r'^3d/project/(?P<project_pk>[^/.]+)/task/(?P<task_pk>[^/.]+)/$', app_views.model_display, name='model_display'),
+    # WebODM-lite: no 3D viewer, 3D links fall back to the 2D map
+    url(r'^3d/project/(?P<project_pk>[^/.]+)/task/(?P<task_pk>[^/.]+)/$', RedirectView.as_view(pattern_name='map'), name='model_display'),
 
     url(r'^public/(?P<uuid_type>project|task)/(?P<uuid>[^/.]+)/map/$', public_views.map, name='public_map'),
     url(r'^public/(?P<uuid_type>project|task)/(?P<uuid>[^/.]+)/iframe/map/$', public_views.map_iframe, name='public_iframe_map'),
-    url(r'^public/task/(?P<task_pk>[^/.]+)/3d/$', public_views.model_display, name='public_3d'),
-    url(r'^public/task/(?P<task_pk>[^/.]+)/iframe/3d/$', public_views.model_display_iframe, name='public_iframe_3d'),
+    url(r'^public/task/(?P<task_pk>[^/.]+)/3d/$', RedirectView.as_view(url='/public/task/%(task_pk)s/map/'), name='public_3d'),
+    url(r'^public/task/(?P<task_pk>[^/.]+)/iframe/3d/$', RedirectView.as_view(url='/public/task/%(task_pk)s/iframe/map/'), name='public_iframe_3d'),
     url(r'^public/task/(?P<task_pk>[^/.]+)/json/$', public_views.task_json, name='public_json'),
 
     url(r'^processingnode/([\d]+)/$', app_views.processing_node, name='processing_node'),

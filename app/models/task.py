@@ -1034,7 +1034,7 @@ class Task(models.Model):
             raise NodeServerError("Cannot import task")
 
         self.assure_cogs()
-        self.check_ept()
+        # WebODM-lite: no EPT generation (entwine is CPU/RAM heavy and only used by the 3D viewer)
         self.update_available_assets_field()
         self.update_georef_fields()
         check_download_grid_for(self)

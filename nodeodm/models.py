@@ -10,6 +10,7 @@ from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext_lazy as _
 
 from webodm import settings
+from app.lite import enforce_lite_options
 
 import json
 from pyodx import Node
@@ -137,7 +138,7 @@ class ProcessingNode(models.Model):
 
         api_client = self.api_client()
 
-        opts = self.options_list_to_dict(options)
+        opts = enforce_lite_options(self.options_list_to_dict(options), self.available_options)
 
         task = api_client.create_task(images, opts, name, progress_callback, parallel_uploads=settings.NODE_CONNECTIONS)
         return task.uuid
@@ -198,7 +199,7 @@ class ProcessingNode(models.Model):
 
         api_client = self.api_client()
         task = api_client.get_task(uuid)
-        return task.restart(self.options_list_to_dict(options))
+        return task.restart(enforce_lite_options(self.options_list_to_dict(options), self.available_options))
 
     def delete(self, using=None, keep_parents=False):
         pnode_id = self.id
